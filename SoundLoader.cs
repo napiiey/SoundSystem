@@ -1,0 +1,86 @@
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using System.Collections.Generic;
+
+#if SOUNDSYSTEM_ADDRESSABLES_SUPPORT
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+#endif
+
+namespace SoundSystem
+{
+    public class SoundLoader
+    {
+        readonly Dictionary<string, AudioClip> audioClips = new Dictionary<string, AudioClip>();
+        readonly bool preloadAll;
+
+        public SoundLoader(bool preloadAllSounds)
+        {
+            this.preloadAll = preloadAllSounds;
+            if (this.preloadAll)
+            {
+                PreloadAllClips();
+            }
+        }
+
+#if SOUNDSYSTEM_ADDRESSABLES_SUPPORT
+        void PreloadAllClips()
+        {
+            // Addressablesでは事前ロードを別の明示的なメソッドで管理することが多いため全体事前ロードは実装しません。
+        }
+
+        public async UniTask<AudioClip> LoadAudioClip(string fileName)
+        {
+            if (audioClips.TryGetValue(fileName, out var clip))
+            {
+                return clip;
+            }
+
+            var handle = Addressables.LoadAssetAsync<AudioClip>(fileName);
+            await handle.Task;
+
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                audioClips[fileName] = handle.Result;
+                return handle.Result;
+            }
+            else
+            {
+                Debug.LogError($"Failed to load AudioClip from Addressables: {fileName}");
+                return null;
+            }
+        }
+#else
+        void PreloadAllClips()
+        {
+            var clips = Resources.LoadAll<AudioClip>("Audio");
+            foreach (var clip in clips)
+            {
+                audioClips.TryAdd(clip.name, clip);
+            }
+        }
+
+        public async UniTask<AudioClip> LoadAudioClip(string fileName)
+        {
+            if (audioClips.TryGetValue(fileName, out AudioClip clip))
+            {
+                return await UniTask.FromResult(clip);
+            }
+
+            // 事前ロードしていない場合は、オンデマンドでロード
+            if (!preloadAll)
+            {
+                clip = Resources.Load<AudioClip>("Audio/" + fileName);
+                if (clip != null)
+                {
+                    audioClips[fileName] = clip; // キャッシュに保存
+                    return await UniTask.FromResult(clip);
+                }
+            }
+
+            Debug.LogError($"Failed to load AudioClip from Resources: {fileName}");
+            return await UniTask.FromResult<AudioClip>(null);
+        }
+#endif
+    }
+}
