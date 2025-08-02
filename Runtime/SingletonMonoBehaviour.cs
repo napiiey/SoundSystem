@@ -19,6 +19,7 @@ namespace Acfeel.SoundSystem
                         instance = go.AddComponent<T>();
                     }
                 }
+
                 return instance;
             }
         }

@@ -68,7 +68,7 @@ namespace Acfeel.SoundSystem
         void ProcessDestroy()
         {
             cts?.Cancel();
-            foreach (var control in controls)
+            foreach (SoundSystemControl control in controls)
             {
                 control.Stop();
             }
@@ -82,7 +82,8 @@ namespace Acfeel.SoundSystem
                 {
                     frameCounter++;
 
-                    if (MainBgm != null && MainBgm.FileName != "" && MainBgm.IsIntroLoop && MainBgm.Source.time >= MainBgm.LoopEndSec)
+                    if (MainBgm != null && MainBgm.FileName != "" && MainBgm.IsIntroLoop &&
+                        MainBgm.Source.time >= MainBgm.LoopEndSec)
                     {
                         MainBgm.Source.time = MainBgm.LoopStartSec;
                     }
@@ -90,14 +91,16 @@ namespace Acfeel.SoundSystem
                     await UniTask.DelayFrame(1, cancellationToken: token);
                 }
             }
-            catch (System.OperationCanceledException)
+            catch (OperationCanceledException)
             {
             }
         }
 
         public SoundSystemControl Play(SoundType soundType, string fileName, float? sourceVol = null)
         {
-            int startCh = Settings.SoundTypeToChannelType[soundType] == ChannelType.Long ? 0 : Settings.LongChannelCount;
+            int startCh = Settings.SoundTypeToChannelType[soundType] == ChannelType.Long
+                ? 0
+                : Settings.LongChannelCount;
             int lastCh = startCh + GetChCapacity(soundType) - 1;
             int resultCh = 0;
             bool noFreeChanel = true;
@@ -165,11 +168,11 @@ namespace Acfeel.SoundSystem
         {
             _ = Instance.soundLoader.LoadAudioClip(fileName, SoundType.Se);
         }
-        
+
         public static void LoadAllForResources()
         {
             Instance.soundLoader.PreloadAllClips();
-        } 
+        }
 
         public static void StopAll(SoundType? soundType = null)
         {
@@ -273,22 +276,22 @@ namespace Acfeel.SoundSystem
         {
             Instance.Amb = Instance.Play(SoundType.Amb, fileName, volume);
         }
-        
+
         public static void LoadBgm(string fileName)
         {
             Instance.Load(fileName, SoundType.Bgm);
         }
-        
+
         public static void LoadAmb(string fileName)
         {
             Instance.Load(fileName, SoundType.Amb);
         }
-        
+
         public static void LoadSe(string fileName)
         {
             Instance.Load(fileName, SoundType.Se);
         }
-        
+
         public static void LoadSys(string fileName)
         {
             Instance.Load(fileName, SoundType.Sys);

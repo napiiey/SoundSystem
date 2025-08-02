@@ -25,7 +25,7 @@ namespace Acfeel.SoundSystem
         [Tooltip("Check this to load all audio clips at startup. It does not work when addressables enabled.")]
         [field: SerializeField]
         public bool PreloadAllSounds { get; set; } = true;
-        
+
         [Tooltip("Maximum simultaneous playback count for BGM and Ambience")]
         [field: SerializeField] public int LongChannelCount { get; private set; } = 4;
         [Tooltip("Maximum simultaneous playback count for SE and Sys")]
@@ -34,30 +34,30 @@ namespace Acfeel.SoundSystem
 
         // VolBalance
         [Header("Global volume balance")]
-        [SerializeField] private float volBalanceMaster = 1.0f;
-        [SerializeField] private float volBalanceBusBgm = 1.0f;
-        [SerializeField] private float volBalanceBusSe = 1.0f;
-        [SerializeField] private float volBalanceBgm = 0.4f;
-        [SerializeField] private float volBalanceAmb = 1.0f;
-        [SerializeField] private float volBalanceSe = 1.0f;
-        [SerializeField] private float volBalanceSys = 1.0f;
-        
+        [SerializeField] float volBalanceMaster = 1.0f;
+        [SerializeField] float volBalanceBusBgm = 1.0f;
+        [SerializeField] float volBalanceBusSe = 1.0f;
+        [SerializeField] float volBalanceBgm = 0.4f;
+        [SerializeField] float volBalanceAmb = 1.0f;
+        [SerializeField] float volBalanceSe = 1.0f;
+        [SerializeField] float volBalanceSys = 1.0f;
+
         // UserVol
         [Header("Initial values for user volume settings")]
-        [SerializeField] private float userVolMaster = 1.0f;
-        [SerializeField] private float userVolBusBgm = 1.0f;
-        [SerializeField] private float userVolBusSe = 1.0f;
-        [SerializeField] private float userVolBgm = 0.7f;
-        [SerializeField] private float userVolAmb = 0.7f;
-        [SerializeField] private float userVolSe = 0.7f;
-        [SerializeField] private float userVolSys = 0.7f;
+        [SerializeField] float userVolMaster = 1.0f;
+        [SerializeField] float userVolBusBgm = 1.0f;
+        [SerializeField] float userVolBusSe = 1.0f;
+        [SerializeField] float userVolBgm = 0.7f;
+        [SerializeField] float userVolAmb = 0.7f;
+        [SerializeField] float userVolSe = 0.7f;
+        [SerializeField] float userVolSys = 0.7f;
 
         // DefaultLoop
         [Header("Initial loop settings")]
-        [SerializeField] private bool defaultLoopBgm = true;
-        [SerializeField] private bool defaultLoopAmb = true;
-        [SerializeField] private bool defaultLoopSe = false;
-        [SerializeField] private bool defaultLoopSys = false;
+        [SerializeField] bool defaultLoopBgm = true;
+        [SerializeField] bool defaultLoopAmb = true;
+        [SerializeField] bool defaultLoopSe;
+        [SerializeField] bool defaultLoopSys;
 
         public Dictionary<SoundType, float> UserVol { get; private set; }
         public Dictionary<SoundType, float> VolBalance { get; private set; }
@@ -71,7 +71,6 @@ namespace Acfeel.SoundSystem
             { SoundType.Sys, ChannelType.Short }
         };
 
-        
 
         public void InitializeDictionaries()
         {

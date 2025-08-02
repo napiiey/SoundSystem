@@ -1,8 +1,7 @@
-using Cysharp.Threading.Tasks;
-using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
-
+using Cysharp.Threading.Tasks;
+using UnityEngine;
 #if SOUNDSYSTEM_ADDRESSABLES_SUPPORT
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -12,7 +11,7 @@ namespace Acfeel.SoundSystem
 {
     public class SoundLoader
     {
-        readonly Dictionary<string, AudioClip> audioClips = new Dictionary<string, AudioClip>();
+        readonly Dictionary<string, AudioClip> audioClips = new();
         readonly SoundSystemSettings settings;
 
         public SoundLoader(SoundSystemSettings settings)
@@ -55,7 +54,7 @@ namespace Acfeel.SoundSystem
         public void PreloadAllClips()
         {
             var clips = Resources.LoadAll<AudioClip>("SoundSystem");
-            foreach (var clip in clips)
+            foreach (AudioClip clip in clips)
             {
                 audioClips.TryAdd(clip.name, clip);
             }

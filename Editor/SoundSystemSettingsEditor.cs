@@ -1,7 +1,7 @@
 using System.Linq;
-using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build;
+using UnityEngine;
 
 namespace Acfeel.SoundSystem.Editor
 {
@@ -9,6 +9,9 @@ namespace Acfeel.SoundSystem.Editor
     public class SoundSystemSettingsEditor : UnityEditor.Editor
     {
         const string Symbol = "SOUNDSYSTEM_ADDRESSABLES_SUPPORT";
+
+        NamedBuildTarget CurrentBuildTarget =>
+            NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
 
         public override void OnInspectorGUI()
         {
@@ -21,11 +24,13 @@ namespace Acfeel.SoundSystem.Editor
 
             if (isDefined)
             {
-                EditorGUILayout.HelpBox($"Enabled.\n \"{Symbol}\" is defined in Scripting Define Symbols.", MessageType.Info);
+                EditorGUILayout.HelpBox($"Enabled.\n \"{Symbol}\" is defined in Scripting Define Symbols.",
+                    MessageType.Info);
 
                 if (GUILayout.Button($"Remove \"{Symbol}\""))
                 {
-                    if (EditorUtility.DisplayDialog("Confirmation", $"Are you sure you want to remove \"{Symbol}\"?", "Remove", "Cancel"))
+                    if (EditorUtility.DisplayDialog("Confirmation", $"Are you sure you want to remove \"{Symbol}\"?",
+                            "Remove", "Cancel"))
                     {
                         RemoveDefineSymbol(Symbol);
                     }
@@ -33,7 +38,8 @@ namespace Acfeel.SoundSystem.Editor
             }
             else
             {
-                EditorGUILayout.HelpBox($"Disabled.\n \"{Symbol}\" is not defined in Scripting Define Symbols.", MessageType.Info);
+                EditorGUILayout.HelpBox($"Disabled.\n \"{Symbol}\" is not defined in Scripting Define Symbols.",
+                    MessageType.Info);
 
                 if (GUILayout.Button($"Add \"{Symbol}\""))
                 {
@@ -41,9 +47,6 @@ namespace Acfeel.SoundSystem.Editor
                 }
             }
         }
-
-        NamedBuildTarget CurrentBuildTarget =>
-            NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
 
         bool IsDefineSymbolSet(string symbol)
         {
@@ -53,7 +56,7 @@ namespace Acfeel.SoundSystem.Editor
 
         void AddDefineSymbol(string symbol)
         {
-            var buildTarget = CurrentBuildTarget;
+            NamedBuildTarget buildTarget = CurrentBuildTarget;
             string symbols = PlayerSettings.GetScriptingDefineSymbols(buildTarget);
 
             if (!symbols.Split(';').Contains(symbol))
@@ -66,7 +69,7 @@ namespace Acfeel.SoundSystem.Editor
 
         void RemoveDefineSymbol(string symbol)
         {
-            var buildTarget = CurrentBuildTarget;
+            NamedBuildTarget buildTarget = CurrentBuildTarget;
             string symbols = PlayerSettings.GetScriptingDefineSymbols(buildTarget);
 
             string[] list = symbols.Split(';');
