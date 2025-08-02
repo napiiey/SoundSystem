@@ -5,7 +5,7 @@ namespace Acfeel.SoundSystem
     public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour
     {
         static T instance;
-        public static T Instance
+        protected static T Instance
         {
             get
             {
