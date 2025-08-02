@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 
@@ -59,4 +58,3 @@ namespace Acfeel.SoundSystem.Editor
         }
     }
 }
-#endif

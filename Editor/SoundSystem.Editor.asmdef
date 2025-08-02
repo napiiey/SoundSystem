@@ -1,0 +1,16 @@
+{
+    "name": "SoundSystem.Editor",
+    "rootNamespace": "Acfeel",
+    "references": [
+        "GUID:155d781af047a7e4bb1a93fc74761688"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
