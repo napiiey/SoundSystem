@@ -73,3 +73,53 @@ var bgm = SoundSystem.PlayBgm("ファイル名"); // 再生時にキャッシュ
 bgm.FadeOut(5f); // 5秒かけてBGMがフェードアウトします。
 ```
 
+### ・グローバルボリュームの設定
+```csharp
+// BGM全体の音量を50%に設定
+SoundSystem.SetGlobalVolume(SoundType.Bgm, 0.5f);
+```
+
+### ・ミュート設定
+```csharp
+// 全てのサウンドをミュート
+SoundSystem.SetMute(true);
+
+// ミュートを解除
+SoundSystem.SetMute(false);
+```
+
+### ・イントロループ
+```csharp
+// 5秒地点から10秒地点までをループ再生
+SoundSystem.PlayBgm("ファイル名").SetIntroLoop(5f, 10f);
+
+// BPMを指定してループ再生
+SoundSystem.PlayBgm("ファイル名").SetIntroLoopBpm(120f, 4f, 8f);
+```
+
+### ・遅延再生
+```csharp
+// 3秒後に再生開始
+SoundSystem.PlaySe("ファイル名").Delay(3f);
+```
+
+### ・パン（左右の音量バランス）の設定
+```csharp
+// 右からのみ再生
+SoundSystem.PlaySe("ファイル名").SetPan(1f);
+```
+
+### ・ピッチ（音の高さ）の設定
+```csharp
+// 2倍の高さで再生
+SoundSystem.PlaySe("ファイル名").SetPitch(2f);
+```
+
+### ・プリロード
+```csharp
+// Addressables利用時
+SoundSystem.LoadForAddressables("ファイル名");
+
+// Resources利用時
+SoundSystem.LoadAllForResources();
+```
