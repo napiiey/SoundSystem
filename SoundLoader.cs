@@ -8,7 +8,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 #endif
 
-namespace SoundSystem
+namespace Acfeel.SoundSystem
 {
     public class SoundLoader
     {

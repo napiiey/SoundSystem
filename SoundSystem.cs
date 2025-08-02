@@ -3,7 +3,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace SoundSystem
+namespace Acfeel.SoundSystem
 {
     public class SoundSystem : SingletonMonoBehaviour<SoundSystem>
     {

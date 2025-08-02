@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SoundSystem
+namespace Acfeel.SoundSystem
 {
     public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour
     {

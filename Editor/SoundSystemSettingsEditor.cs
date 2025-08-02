@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build;
 
-namespace SoundSystem.Editor
+namespace Acfeel.SoundSystem.Editor
 {
     [CustomEditor(typeof(SoundSystemSettings))]
     public class SoundSystemSettingsEditor : UnityEditor.Editor

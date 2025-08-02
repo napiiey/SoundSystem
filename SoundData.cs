@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SoundSystem
+namespace Acfeel.SoundSystem
 {
     public enum SoundType
     {

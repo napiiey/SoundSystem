@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SoundSystem
+namespace Acfeel.SoundSystem
 {
     [CreateAssetMenu(fileName = "SoundSystemSettings", menuName = "SoundSystem/Create Settings")]
     public class SoundSystemSettings : ScriptableObject

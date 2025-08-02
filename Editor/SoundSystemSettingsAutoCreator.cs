@@ -1,8 +1,8 @@
 using UnityEditor;
 using UnityEngine;
-using SoundSystem;
+using Acfeel.SoundSystem;
 
-namespace SoundSystem.Editor
+namespace Acfeel.SoundSystem.Editor
 {
     [InitializeOnLoad]
     public static class SoundSystemSettingsAutoCreator
