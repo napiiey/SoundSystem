@@ -7,5 +7,10 @@ namespace SoundSystem
     {
         [Tooltip("Check this to load all audio clips at startup. It does not work when addressables enabled.")]
         [field: SerializeField] public bool PreloadAllSounds { get; set; } = true;
+        [field: SerializeField] public string LootFolderNameInResources { get; set; } = "Audio";
+        [field: SerializeField] public string AmbFolderNameInResources { get; set; } = "Amb";
+        [field: SerializeField] public string BgmFolderNameInResources { get; set; } = "Bgm";
+        [field: SerializeField] public string SeFolderNameInResources { get; set; } = "Se";
+        [field: SerializeField] public string SysFolderNameInResources { get; set; } = "Sys";
     }
 }

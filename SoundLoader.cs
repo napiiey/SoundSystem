@@ -12,12 +12,12 @@ namespace SoundSystem
     public class SoundLoader
     {
         readonly Dictionary<string, AudioClip> audioClips = new Dictionary<string, AudioClip>();
-        readonly bool preloadAll;
+        readonly SoundSystemSettings settings;
 
-        public SoundLoader(bool preloadAllSounds)
+        public SoundLoader(SoundSystemSettings settings)
         {
-            this.preloadAll = preloadAllSounds;
-            if (this.preloadAll)
+            this.settings = settings;
+            if (this.settings.PreloadAllSounds)
             {
                 PreloadAllClips();
             }
@@ -68,9 +68,9 @@ namespace SoundSystem
             }
 
             // 事前ロードしていない場合は、オンデマンドでロード
-            if (!preloadAll)
+            if (!settings.PreloadAllSounds)
             {
-                clip = Resources.Load<AudioClip>("Audio/" + fileName);
+                clip = Resources.Load<AudioClip>(settings.LootFolderNameInResources + "/" + fileName);
                 if (clip != null)
                 {
                     audioClips[fileName] = clip; // キャッシュに保存

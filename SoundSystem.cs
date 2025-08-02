@@ -32,7 +32,7 @@ namespace SoundSystem
                 Settings = ScriptableObject.CreateInstance<SoundSystemSettings>();
             }
 
-            soundLoader = new SoundLoader(Settings.PreloadAllSounds);
+            soundLoader = new SoundLoader(Settings);
             allChannels = SoundData.LongChannelCount + SoundData.ShortChannelCount;
             audioSources = new AudioSource[allChannels];
             controls = new SoundSystemControl[allChannels];
