@@ -8,7 +8,7 @@ namespace Acfeel.SoundSystem
 {
     public class SoundSystem : SingletonMonoBehaviour<SoundSystem>
     {
-        readonly Queue<int>[] history = { new(), new() };
+        readonly Queue<int>[] history = new Queue<int>[Enum.GetValues(typeof(ChannelType)).Length];
         SoundLoader soundLoader;
         AudioSource[] audioSources;
         SoundSystemControl[] controls;
@@ -35,6 +35,11 @@ namespace Acfeel.SoundSystem
             }
 
             Settings.InitializeDictionaries();
+
+            for (int i = 0; i < history.Length; i++)
+            {
+                history[i] = new Queue<int>();
+            }
 
             soundLoader = new SoundLoader(Settings);
             channelCount = Settings.LongChannelCount + Settings.ShortChannelCount;
