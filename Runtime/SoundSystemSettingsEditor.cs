@@ -9,7 +9,7 @@ namespace Acfeel.SoundSystem.Editor
     [CustomEditor(typeof(SoundSystemSettings))]
     public class SoundSystemSettingsEditor : UnityEditor.Editor
     {
-        private const string Symbol = "SOUNDSYSTEM_ADDRESSABLES_SUPPORT";
+        const string Symbol = "SOUNDSYSTEM_ADDRESSABLES_SUPPORT";
 
         public override void OnInspectorGUI()
         {
@@ -43,16 +43,16 @@ namespace Acfeel.SoundSystem.Editor
             }
         }
 
-        private NamedBuildTarget CurrentBuildTarget =>
+        NamedBuildTarget CurrentBuildTarget =>
             NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
 
-        private bool IsDefineSymbolSet(string symbol)
+        bool IsDefineSymbolSet(string symbol)
         {
             string symbols = PlayerSettings.GetScriptingDefineSymbols(CurrentBuildTarget);
             return symbols.Split(';').Any(s => s.Trim() == symbol);
         }
 
-        private void AddDefineSymbol(string symbol)
+        void AddDefineSymbol(string symbol)
         {
             var buildTarget = CurrentBuildTarget;
             string symbols = PlayerSettings.GetScriptingDefineSymbols(buildTarget);
@@ -65,7 +65,7 @@ namespace Acfeel.SoundSystem.Editor
             }
         }
 
-        private void RemoveDefineSymbol(string symbol)
+        void RemoveDefineSymbol(string symbol)
         {
             var buildTarget = CurrentBuildTarget;
             string symbols = PlayerSettings.GetScriptingDefineSymbols(buildTarget);

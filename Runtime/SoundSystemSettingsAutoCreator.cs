@@ -18,7 +18,7 @@ namespace Acfeel.SoundSystem.Editor
             }
         }
 
-        private static void CreateSettingsAsset()
+        public static void CreateSettingsAsset()
         {
             var instance = ScriptableObject.CreateInstance<SoundSystemSettings>();
 
@@ -39,9 +39,9 @@ namespace Acfeel.SoundSystem.Editor
             }
 
             // Create subfolders: Bgm, Amb, Se
-            CreateSubFolder(soundSystemFolder, "BGM");
+            CreateSubFolder(soundSystemFolder, "Bgm");
             CreateSubFolder(soundSystemFolder, "Amb");
-            CreateSubFolder(soundSystemFolder, "SE");
+            CreateSubFolder(soundSystemFolder, "Se");
 
             // Create the ScriptableObject asset
             AssetDatabase.CreateAsset(instance, assetPath);
@@ -49,7 +49,7 @@ namespace Acfeel.SoundSystem.Editor
             Debug.Log("SoundSystemSettings.asset created at: " + assetPath);
         }
 
-        private static void CreateSubFolder(string parent, string child)
+        static void CreateSubFolder(string parent, string child)
         {
             string childPath = parent + "/" + child;
             if (!AssetDatabase.IsValidFolder(childPath))
