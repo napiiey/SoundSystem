@@ -138,6 +138,21 @@ namespace SoundSystem
             }
         }
 
+        public void Load(string fileName, SoundType soundType)
+        {
+            _ = soundLoader.LoadAudioClip(fileName, soundType);
+        }
+
+        public void LoadForAddressables(string fileName)
+        {
+            _ = soundLoader.LoadAudioClip(fileName, SoundType.Se);
+        }
+        
+        public void LoadAllForResources()
+        {
+            soundLoader.PreloadAllClips();
+        } 
+
         public void StopAll(SoundType? soundType = null)
         {
             for (int i = 0; i < audioSources.Length; i++)
@@ -239,6 +254,26 @@ namespace SoundSystem
         public void PlayMainAmb(string fileName, float? volume = null)
         {
             Amb = Play(SoundType.Amb, fileName, volume);
+        }
+        
+        public void LoadBgm(string fileName)
+        {
+            Load(fileName, SoundType.Bgm);
+        }
+        
+        public void LoadAmb(string fileName)
+        {
+            Load(fileName, SoundType.Amb);
+        }
+        
+        public void LoadSe(string fileName)
+        {
+            Load(fileName, SoundType.Se);
+        }
+        
+        public void LoadSys(string fileName)
+        {
+            Load(fileName, SoundType.Sys);
         }
     }
 }

@@ -25,12 +25,12 @@ namespace SoundSystem
         }
 
 #if SOUNDSYSTEM_ADDRESSABLES_SUPPORT
-        void PreloadAllClips()
+        public void PreloadAllClips()
         {
             // Addressablesでは事前ロードを別の明示的なメソッドで管理することが多いため全体事前ロードは実装しません。
         }
 
-        public async UniTask<AudioClip> LoadAudioClip(string fileName)
+        public async UniTask<AudioClip> LoadAudioClip(string fileName, SoundType soundType)
         {
             if (audioClips.TryGetValue(fileName, out var clip))
             {
@@ -52,7 +52,7 @@ namespace SoundSystem
             }
         }
 #else
-        void PreloadAllClips()
+        public void PreloadAllClips()
         {
             var clips = Resources.LoadAll<AudioClip>("Audio");
             foreach (var clip in clips)
