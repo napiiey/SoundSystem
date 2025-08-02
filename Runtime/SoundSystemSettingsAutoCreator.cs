@@ -1,7 +1,6 @@
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
-using Acfeel.SoundSystem;
 
 namespace Acfeel.SoundSystem.Editor
 {
@@ -32,7 +31,7 @@ namespace Acfeel.SoundSystem.Editor
 
             AssetDatabase.CreateAsset(instance, assetPath);
             AssetDatabase.SaveAssets();
-            Debug.Log("SoundSystemSettings.asset を自動生成しました。");
+            Debug.Log("SoundSystemSettings.asset created in " + assetPath);
         }
     }
 }
