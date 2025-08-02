@@ -11,7 +11,7 @@ namespace SoundSystem
         SoundLoader soundLoader;
         AudioSource[] audioSources;
         SoundSystemControl[] controls;
-        int allChannels;
+        int channelCount;
         bool mute;
         long frameCounter;
         int idCounter;
@@ -33,11 +33,11 @@ namespace SoundSystem
             }
 
             soundLoader = new SoundLoader(Settings);
-            allChannels = SoundData.LongChannelCount + SoundData.ShortChannelCount;
-            audioSources = new AudioSource[allChannels];
-            controls = new SoundSystemControl[allChannels];
+            channelCount = SoundData.LongChannelCount + SoundData.ShortChannelCount;
+            audioSources = new AudioSource[channelCount];
+            controls = new SoundSystemControl[channelCount];
 
-            for (int i = 0; i < allChannels; i++)
+            for (int i = 0; i < channelCount; i++)
             {
                 audioSources[i] = gameObject.AddComponent<AudioSource>();
                 audioSources[i].playOnAwake = false;
@@ -143,31 +143,31 @@ namespace SoundSystem
             _ = soundLoader.LoadAudioClip(fileName, soundType);
         }
 
-        public void LoadForAddressables(string fileName)
+        public static void LoadForAddressables(string fileName)
         {
-            _ = soundLoader.LoadAudioClip(fileName, SoundType.Se);
+            _ = Instance.soundLoader.LoadAudioClip(fileName, SoundType.Se);
         }
         
-        public void LoadAllForResources()
+        public static void LoadAllForResources()
         {
-            soundLoader.PreloadAllClips();
+            Instance.soundLoader.PreloadAllClips();
         } 
 
-        public void StopAll(SoundType? soundType = null)
+        public static void StopAll(SoundType? soundType = null)
         {
-            for (int i = 0; i < audioSources.Length; i++)
+            for (int i = 0; i < Instance.audioSources.Length; i++)
             {
-                if (soundType != null && controls[i].SoundType != soundType) continue;
-                controls[i].Stop();
+                if (soundType != null && Instance.controls[i].SoundType != soundType) continue;
+                Instance.controls[i].Stop();
             }
         }
 
-        public void FadeOutAll(float sec, SoundType? soundType = null)
+        public static void FadeOutAll(float sec, SoundType? soundType = null)
         {
-            for (int i = 0; i < controls.Length; i++)
+            for (int i = 0; i < Instance.controls.Length; i++)
             {
-                if (soundType != null && controls[i].SoundType != soundType) continue;
-                controls[i].FadeOut(sec);
+                if (soundType != null && Instance.controls[i].SoundType != soundType) continue;
+                Instance.controls[i].FadeOut(sec);
             }
         }
 
@@ -183,39 +183,39 @@ namespace SoundSystem
                   SoundData.VolBalance[soundType];
         }
 
-        public void SetGlobalVolume(SoundType soundType, float vol)
+        public static void SetGlobalVolume(SoundType soundType, float vol)
         {
-            SoundData.UserVol[soundType] = vol;
+            Instance.SoundData.UserVol[soundType] = vol;
 
-            for (int i = 0; i < allChannels; i++)
+            for (int i = 0; i < Instance.channelCount; i++)
             {
-                if (controls[i].SoundType == soundType)
+                if (Instance.controls[i].SoundType == soundType)
                 {
-                    controls[i].SetVolume();
+                    Instance.controls[i].SetVolume();
                 }
             }
         }
 
-        public void SetInnerVolume(SoundType soundType, float vol)
+        public static void SetInnerVolume(SoundType soundType, float vol)
         {
-            SoundData.VolBalance[soundType] = vol;
+            Instance.SoundData.VolBalance[soundType] = vol;
 
-            for (int i = 0; i < allChannels; i++)
+            for (int i = 0; i < Instance.channelCount; i++)
             {
-                if (controls[i].SoundType == soundType)
+                if (Instance.controls[i].SoundType == soundType)
                 {
-                    controls[i].SetVolume();
+                    Instance.controls[i].SetVolume();
                 }
             }
         }
 
-        public void SetMute(bool boolean)
+        public static void SetMute(bool boolean)
         {
-            mute = boolean;
+            Instance.mute = boolean;
 
-            for (int i = 0; i < allChannels; i++)
+            for (int i = 0; i < Instance.channelCount; i++)
             {
-                controls[i].SetVolume();
+                Instance.controls[i].SetVolume();
             }
         }
 
@@ -226,54 +226,54 @@ namespace SoundSystem
                 : SoundData.ShortChannelCount;
         }
 
-        public SoundSystemControl PlayBgm(string fileName, float? volume = null)
+        public static SoundSystemControl PlayBgm(string fileName, float? volume = null)
         {
-            return Play(SoundType.Bgm, fileName, volume);
+            return Instance.Play(SoundType.Bgm, fileName, volume);
         }
 
-        public SoundSystemControl PlayAmb(string fileName, float? volume = null)
+        public static SoundSystemControl PlayAmb(string fileName, float? volume = null)
         {
-            return Play(SoundType.Amb, fileName, volume);
+            return Instance.Play(SoundType.Amb, fileName, volume);
         }
 
-        public SoundSystemControl PlaySe(string fileName, float? volume = null)
+        public static SoundSystemControl PlaySe(string fileName, float? volume = null)
         {
-            return Play(SoundType.Se, fileName, volume);
+            return Instance.Play(SoundType.Se, fileName, volume);
         }
 
-        public SoundSystemControl PlaySys(string fileName, float? volume = null)
+        public static SoundSystemControl PlaySys(string fileName, float? volume = null)
         {
-            return Play(SoundType.Sys, fileName, volume);
+            return Instance.Play(SoundType.Sys, fileName, volume);
         }
 
-        public void PlayMainBgm(string fileName, float? volume = null)
+        public static void PlayMainBgm(string fileName, float? volume = null)
         {
-            Bgm = Play(SoundType.Bgm, fileName, volume);
+            Instance.Bgm = Instance.Play(SoundType.Bgm, fileName, volume);
         }
 
-        public void PlayMainAmb(string fileName, float? volume = null)
+        public static void PlayMainAmb(string fileName, float? volume = null)
         {
-            Amb = Play(SoundType.Amb, fileName, volume);
+            Instance.Amb = Instance.Play(SoundType.Amb, fileName, volume);
         }
         
-        public void LoadBgm(string fileName)
+        public static void LoadBgm(string fileName)
         {
-            Load(fileName, SoundType.Bgm);
+            Instance.Load(fileName, SoundType.Bgm);
         }
         
-        public void LoadAmb(string fileName)
+        public static void LoadAmb(string fileName)
         {
-            Load(fileName, SoundType.Amb);
+            Instance.Load(fileName, SoundType.Amb);
         }
         
-        public void LoadSe(string fileName)
+        public static void LoadSe(string fileName)
         {
-            Load(fileName, SoundType.Se);
+            Instance.Load(fileName, SoundType.Se);
         }
         
-        public void LoadSys(string fileName)
+        public static void LoadSys(string fileName)
         {
-            Load(fileName, SoundType.Sys);
+            Instance.Load(fileName, SoundType.Sys);
         }
     }
 }
