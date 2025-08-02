@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -53,9 +54,23 @@ namespace Acfeel.SoundSystem
             MainUpdate(cts.Token).Forget();
         }
 
+        void OnDestroy()
+        {
+            ProcessDestroy();
+        }
+
         void OnApplicationQuit()
         {
-            cts.Cancel();
+            ProcessDestroy();
+        }
+
+        void ProcessDestroy()
+        {
+            cts?.Cancel();
+            foreach (var control in controls)
+            {
+                control.Stop();
+            }
         }
 
         async UniTask MainUpdate(CancellationToken token)
