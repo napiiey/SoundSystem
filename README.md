@@ -46,6 +46,9 @@
 ### ▶️ 再生
 
 ```csharp
+using Acfeel.SoundSystem;
+```
+```csharp
 SoundSystem.PlayBgm("ファイル名"); // BGM再生  
 SoundSystem.PlaySe("ファイル名");  // 効果音再生  
 SoundSystem.PlayAmb("ファイル名"); // 環境音再生
