@@ -12,5 +12,22 @@ namespace SoundSystem
         [field: SerializeField] public string BgmFolderNameInResources { get; set; } = "Bgm";
         [field: SerializeField] public string SeFolderNameInResources { get; set; } = "Se";
         [field: SerializeField] public string SysFolderNameInResources { get; set; } = "Sys";
+        
+        public string GetFolderNameInResources(SoundType soundType)
+        {
+            switch (soundType)
+            {
+                case SoundType.Amb:
+                    return AmbFolderNameInResources;
+                case SoundType.Bgm:
+                    return BgmFolderNameInResources;
+                case SoundType.Se:
+                    return SeFolderNameInResources;
+                case SoundType.Sys:
+                    return SysFolderNameInResources;
+                default:
+                    return null;
+            }
+        }
     }
 }

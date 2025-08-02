@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Text;
 
 #if SOUNDSYSTEM_ADDRESSABLES_SUPPORT
 using UnityEngine.AddressableAssets;
@@ -60,7 +61,7 @@ namespace SoundSystem
             }
         }
 
-        public async UniTask<AudioClip> LoadAudioClip(string fileName)
+        public async UniTask<AudioClip> LoadAudioClip(string fileName, SoundType soundType)
         {
             if (audioClips.TryGetValue(fileName, out AudioClip clip))
             {
@@ -70,7 +71,14 @@ namespace SoundSystem
             // 事前ロードしていない場合は、オンデマンドでロード
             if (!settings.PreloadAllSounds)
             {
-                clip = Resources.Load<AudioClip>(settings.LootFolderNameInResources + "/" + fileName);
+                var sb = new StringBuilder();
+                sb.Append(settings.LootFolderNameInResources);
+                sb.Append('/');
+                sb.Append(settings.GetFolderNameInResources(soundType));
+                sb.Append('/');
+                sb.Append(fileName);
+                string path = sb.ToString();
+                clip = Resources.Load<AudioClip>(path);
                 if (clip != null)
                 {
                     audioClips[fileName] = clip; // キャッシュに保存

@@ -122,14 +122,14 @@ namespace SoundSystem
             audioSources[resultCh].pitch = 1.0f;
             controls[resultCh].SetVolume();
 
-            LoadAndPlay(resultCh, fileName).Forget();
+            LoadAndPlay(resultCh, fileName, soundType).Forget();
 
             return controls[resultCh];
         }
 
-        async UniTaskVoid LoadAndPlay(int channel, string fileName)
+        async UniTaskVoid LoadAndPlay(int channel, string fileName, SoundType soundType)
         {
-            AudioClip clip = await soundLoader.LoadAudioClip(fileName);
+            AudioClip clip = await soundLoader.LoadAudioClip(fileName, soundType);
 
             if (clip != null)
             {
