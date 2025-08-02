@@ -19,7 +19,9 @@ namespace Acfeel.SoundSystem
         public SoundData SoundData { get; set; } = new();
         public SoundSystemSettings Settings { get; private set; }
         public SoundSystemControl Bgm { get; set; }
+        public static SoundSystemControl MainBgm => Instance.Bgm;
         public SoundSystemControl Amb { get; set; }
+        public static SoundSystemControl MainAmb => Instance.Amb;
 
         protected override void Awake()
         {
@@ -64,9 +66,9 @@ namespace Acfeel.SoundSystem
                 {
                     frameCounter++;
 
-                    if (Bgm != null && Bgm.FileName != "" && Bgm.IsIntroLoop && Bgm.Source.time >= Bgm.LoopEndSec)
+                    if (MainBgm != null && MainBgm.FileName != "" && MainBgm.IsIntroLoop && MainBgm.Source.time >= MainBgm.LoopEndSec)
                     {
-                        Bgm.Source.time = Bgm.LoopStartSec;
+                        MainBgm.Source.time = MainBgm.LoopStartSec;
                     }
 
                     await UniTask.DelayFrame(1, cancellationToken: token);
