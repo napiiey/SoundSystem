@@ -15,7 +15,7 @@ namespace Acfeel.SoundSystem
             soundSystem = system;
             Source = source;
             ch = channel;
-            SourceVol = SoundData.DefaultSourceVol;
+            SourceVol = soundSystem.Settings.DefaultSourceVol;
         }
 
         public string FileName { get; set; } = "";
@@ -40,7 +40,7 @@ namespace Acfeel.SoundSystem
         {
             FileName = file;
             SoundType = soundType;
-            SourceVol = SoundData.DefaultSourceVol;
+            SourceVol = soundSystem.Settings.DefaultSourceVol;
             FaderVol = 1.0f;
             Pitch = 1.0f;
             Pan = 0.0f;

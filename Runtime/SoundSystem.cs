@@ -17,7 +17,6 @@ namespace Acfeel.SoundSystem
         long frameCounter;
         int idCounter;
         CancellationTokenSource cts;
-        public SoundData SoundData { get; set; } = new();
         public SoundSystemSettings Settings { get; private set; }
         public SoundSystemControl Bgm { get; set; }
         public static SoundSystemControl MainBgm => Instance.Bgm;
@@ -36,7 +35,7 @@ namespace Acfeel.SoundSystem
             }
 
             soundLoader = new SoundLoader(Settings);
-            channelCount = SoundData.LongChannelCount + SoundData.ShortChannelCount;
+            channelCount = Settings.LongChannelCount + Settings.ShortChannelCount;
             audioSources = new AudioSource[channelCount];
             controls = new SoundSystemControl[channelCount];
 
@@ -96,7 +95,7 @@ namespace Acfeel.SoundSystem
 
         public SoundSystemControl Play(SoundType soundType, string fileName, float? sourceVol = null)
         {
-            int startCh = SoundData.SoundTypeToChannelType[soundType] == ChannelType.Long ? 0 : SoundData.LongChannelCount;
+            int startCh = Settings.SoundTypeToChannelType[soundType] == ChannelType.Long ? 0 : Settings.LongChannelCount;
             int lastCh = startCh + GetChCapacity(soundType) - 1;
             int resultCh = 0;
             bool noFreeChanel = true;
@@ -115,7 +114,7 @@ namespace Acfeel.SoundSystem
                 if (!audioSources[ch].isPlaying && !controls[ch].IsPrePlaying)
                 {
                     resultCh = ch;
-                    history[(int)SoundData.SoundTypeToChannelType[soundType]].Enqueue(resultCh);
+                    history[(int)Settings.SoundTypeToChannelType[soundType]].Enqueue(resultCh);
                     noFreeChanel = false;
                     break;
                 }
@@ -123,8 +122,8 @@ namespace Acfeel.SoundSystem
 
             if (noFreeChanel)
             {
-                resultCh = history[(int)SoundData.SoundTypeToChannelType[soundType]].Dequeue();
-                history[(int)SoundData.SoundTypeToChannelType[soundType]].Enqueue(resultCh);
+                resultCh = history[(int)Settings.SoundTypeToChannelType[soundType]].Dequeue();
+                history[(int)Settings.SoundTypeToChannelType[soundType]].Enqueue(resultCh);
             }
 
             if (audioSources[resultCh].isPlaying == controls[resultCh].IsPrePlaying)
@@ -133,8 +132,8 @@ namespace Acfeel.SoundSystem
             }
 
             controls[resultCh].Reset(fileName, soundType, frameCounter, idCounter++);
-            controls[resultCh].SourceVol = sourceVol ?? SoundData.DefaultSourceVol;
-            audioSources[resultCh].loop = SoundData.DefaultLoop[soundType];
+            controls[resultCh].SourceVol = sourceVol ?? Settings.DefaultSourceVol;
+            audioSources[resultCh].loop = Settings.DefaultLoop[soundType];
             audioSources[resultCh].panStereo = 0.0f;
             audioSources[resultCh].pitch = 1.0f;
             controls[resultCh].SetVolume();
@@ -195,14 +194,14 @@ namespace Acfeel.SoundSystem
                 : SoundType.BusSe;
             return mute
                 ? 0.0f
-                : SoundData.UserVol[SoundType.Master] * SoundData.UserVol[busType] * SoundData.UserVol[soundType]
-                  * SoundData.VolBalance[SoundType.Master] * SoundData.VolBalance[busType] *
-                  SoundData.VolBalance[soundType];
+                : Settings.UserVol[SoundType.Master] * Settings.UserVol[busType] * Settings.UserVol[soundType]
+                  * Settings.VolBalance[SoundType.Master] * Settings.VolBalance[busType] *
+                  Settings.VolBalance[soundType];
         }
 
         public static void SetGlobalVolume(SoundType soundType, float vol)
         {
-            Instance.SoundData.UserVol[soundType] = vol;
+            Instance.Settings.UserVol[soundType] = vol;
 
             for (int i = 0; i < Instance.channelCount; i++)
             {
@@ -215,7 +214,7 @@ namespace Acfeel.SoundSystem
 
         public static void SetInnerVolume(SoundType soundType, float vol)
         {
-            Instance.SoundData.VolBalance[soundType] = vol;
+            Instance.Settings.VolBalance[soundType] = vol;
 
             for (int i = 0; i < Instance.channelCount; i++)
             {
@@ -238,9 +237,9 @@ namespace Acfeel.SoundSystem
 
         public int GetChCapacity(SoundType soundType)
         {
-            return SoundData.SoundTypeToChannelType[soundType] == ChannelType.Long
-                ? SoundData.LongChannelCount
-                : SoundData.ShortChannelCount;
+            return Settings.SoundTypeToChannelType[soundType] == ChannelType.Long
+                ? Settings.LongChannelCount
+                : Settings.ShortChannelCount;
         }
 
         public static SoundSystemControl PlayBgm(string fileName, float? volume = null)
