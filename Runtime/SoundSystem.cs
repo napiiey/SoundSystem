@@ -34,6 +34,8 @@ namespace Acfeel.SoundSystem
                 Settings = ScriptableObject.CreateInstance<SoundSystemSettings>();
             }
 
+            Settings.InitializeDictionaries();
+
             soundLoader = new SoundLoader(Settings);
             channelCount = Settings.LongChannelCount + Settings.ShortChannelCount;
             audioSources = new AudioSource[channelCount];

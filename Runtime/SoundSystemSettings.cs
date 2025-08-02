@@ -71,10 +71,7 @@ namespace Acfeel.SoundSystem
             { SoundType.Sys, ChannelType.Short }
         };
 
-        void OnEnable()
-        {
-            InitializeDictionaries();
-        }
+        
 
         public void InitializeDictionaries()
         {
