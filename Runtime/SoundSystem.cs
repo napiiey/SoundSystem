@@ -24,7 +24,7 @@ namespace Acfeel.SoundSystem
         protected override void Awake()
         {
             base.Awake();
-            Settings = Resources.Load<SoundSystemSettings>("SoundSystemSettings");
+            Settings = Resources.Load<SoundSystemSettings>("SoundSystem/SoundSystemSettings");
             if (Settings == null)
             {
                 Debug.LogError("SoundSystemSettings.asset not found in Resources folder. Please create one.");

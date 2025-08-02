@@ -16,17 +16,17 @@ namespace Acfeel.SoundSystem.Editor
             base.OnInspectorGUI();
 
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Addressables サポート設定", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Addressables Support", EditorStyles.boldLabel);
 
             bool isDefined = IsDefineSymbolSet(Symbol);
 
             if (isDefined)
             {
-                EditorGUILayout.HelpBox($"ScriptingDefineSymbolsに {Symbol} は定義されています。", MessageType.Info);
+                EditorGUILayout.HelpBox($"Enabled.\n \"{Symbol}\" is defined in Scripting Define Symbols.", MessageType.Info);
 
-                if (GUILayout.Button($"{Symbol} を削除"))
+                if (GUILayout.Button($"Remove \"{Symbol}\""))
                 {
-                    if (EditorUtility.DisplayDialog("確認", $"{Symbol} を削除してもよろしいですか？", "削除", "キャンセル"))
+                    if (EditorUtility.DisplayDialog("Confirmation", $"Are you sure you want to remove \"{Symbol}\"?", "Remove", "Cancel"))
                     {
                         RemoveDefineSymbol(Symbol);
                     }
@@ -34,9 +34,9 @@ namespace Acfeel.SoundSystem.Editor
             }
             else
             {
-                EditorGUILayout.HelpBox($"ScriptingDefineSymbolsに {Symbol} は未定義です。", MessageType.Warning);
+                EditorGUILayout.HelpBox($"Disabled.\n \"{Symbol}\" is not defined in Scripting Define Symbols.", MessageType.Info);
 
-                if (GUILayout.Button($"{Symbol} を追加"))
+                if (GUILayout.Button($"Add \"{Symbol}\""))
                 {
                     AddDefineSymbol(Symbol);
                 }
@@ -61,7 +61,7 @@ namespace Acfeel.SoundSystem.Editor
             {
                 string updated = string.IsNullOrEmpty(symbols) ? symbol : symbols + ";" + symbol;
                 PlayerSettings.SetScriptingDefineSymbols(buildTarget, updated);
-                Debug.Log($"定義シンボル \"{symbol}\" を追加しました。");
+                Debug.Log($"Added define symbol \"{symbol}\".");
             }
         }
 
@@ -73,7 +73,7 @@ namespace Acfeel.SoundSystem.Editor
             string[] list = symbols.Split(';');
             string updated = string.Join(";", list.Where(s => s.Trim() != symbol));
             PlayerSettings.SetScriptingDefineSymbols(buildTarget, updated);
-            Debug.Log($"定義シンボル \"{symbol}\" を削除しました。");
+            Debug.Log($"Removed define symbol \"{symbol}\".");
         }
     }
 }

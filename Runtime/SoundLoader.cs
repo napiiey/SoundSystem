@@ -54,7 +54,7 @@ namespace Acfeel.SoundSystem
 #else
         public void PreloadAllClips()
         {
-            var clips = Resources.LoadAll<AudioClip>("Audio");
+            var clips = Resources.LoadAll<AudioClip>("SoundSystem");
             foreach (var clip in clips)
             {
                 audioClips.TryAdd(clip.name, clip);
@@ -72,12 +72,12 @@ namespace Acfeel.SoundSystem
             if (!settings.PreloadAllSounds)
             {
                 var sb = new StringBuilder();
-                sb.Append(settings.LootFolderNameInResources);
-                sb.Append('/');
-                sb.Append(settings.GetFolderNameInResources(soundType));
+                sb.Append("SoundSystem/");
+                sb.Append(GetFolderNameInResources(soundType));
                 sb.Append('/');
                 sb.Append(fileName);
                 string path = sb.ToString();
+                Debug.Log(path);
                 clip = Resources.Load<AudioClip>(path);
                 if (clip != null)
                 {
@@ -88,6 +88,23 @@ namespace Acfeel.SoundSystem
 
             Debug.LogError($"Failed to load AudioClip from Resources: {fileName}");
             return await UniTask.FromResult<AudioClip>(null);
+        }
+
+        string GetFolderNameInResources(SoundType soundType)
+        {
+            switch (soundType)
+            {
+                case SoundType.Amb:
+                    return "Amb";
+                case SoundType.Bgm:
+                    return "Bgm";
+                case SoundType.Se:
+                    return "Se";
+                case SoundType.Sys:
+                    return "Sys";
+                default:
+                    return null;
+            }
         }
 #endif
     }

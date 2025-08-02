@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
+using System.IO;
 
 namespace Acfeel.SoundSystem.Editor
 {
@@ -9,8 +10,8 @@ namespace Acfeel.SoundSystem.Editor
     {
         static SoundSystemSettingsAutoCreator()
         {
-            const string path = "SoundSystemSettings";
-            var settings = Resources.Load<SoundSystemSettings>(path);
+            const string resourcePath = "SoundSystem/SoundSystemSettings";
+            var settings = Resources.Load<SoundSystemSettings>(resourcePath);
             if (settings == null)
             {
                 CreateSettingsAsset();
@@ -20,18 +21,42 @@ namespace Acfeel.SoundSystem.Editor
         private static void CreateSettingsAsset()
         {
             var instance = ScriptableObject.CreateInstance<SoundSystemSettings>();
-            const string folder = "Assets/Resources";
-            const string assetPath = folder + "/SoundSystemSettings.asset";
 
+            const string baseFolder = "Assets/Resources";
+            const string soundSystemFolder = baseFolder + "/SoundSystem";
+            const string assetPath = soundSystemFolder + "/SoundSystemSettings.asset";
+
+            // Ensure base folder exists
             if (!AssetDatabase.IsValidFolder("Assets/Resources"))
+            {
                 AssetDatabase.CreateFolder("Assets", "Resources");
+            }
 
-            if (!AssetDatabase.IsValidFolder(folder))
-                AssetDatabase.CreateFolder("Assets/Resources", "SoundSystem");
+            // Ensure SoundSystem folder exists
+            if (!AssetDatabase.IsValidFolder(soundSystemFolder))
+            {
+                AssetDatabase.CreateFolder(baseFolder, "SoundSystem");
+            }
 
+            // Create subfolders: Bgm, Amb, Se
+            CreateSubFolder(soundSystemFolder, "BGM");
+            CreateSubFolder(soundSystemFolder, "Amb");
+            CreateSubFolder(soundSystemFolder, "SE");
+
+            // Create the ScriptableObject asset
             AssetDatabase.CreateAsset(instance, assetPath);
             AssetDatabase.SaveAssets();
-            Debug.Log("SoundSystemSettings.asset created in " + assetPath);
+            Debug.Log("SoundSystemSettings.asset created at: " + assetPath);
+        }
+
+        private static void CreateSubFolder(string parent, string child)
+        {
+            string childPath = parent + "/" + child;
+            if (!AssetDatabase.IsValidFolder(childPath))
+            {
+                AssetDatabase.CreateFolder(parent, child);
+                Debug.Log("Created folder: " + childPath);
+            }
         }
     }
 }
