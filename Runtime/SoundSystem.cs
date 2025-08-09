@@ -19,9 +19,9 @@ namespace Acfeel.SoundSystem
         CancellationTokenSource cts;
         public SoundSystemSettings Settings { get; private set; }
         public SoundSystemControl Bgm { get; set; }
-        public static SoundSystemControl MainBgm => Instance.Bgm;
+        public static SoundSystemControl MainBgm => Instance ? Instance.Bgm : null;
         public SoundSystemControl Amb { get; set; }
-        public static SoundSystemControl MainAmb => Instance.Amb;
+        public static SoundSystemControl MainAmb => Instance ? Instance.Amb : null;
 
         protected override void Awake()
         {
