@@ -114,7 +114,7 @@ namespace Acfeel.SoundSystem
             {
                 if (controls[ch].FileName == fileName && controls[ch].StartFrame == frameCounter)
                 {
-                    Debug.Log("SoundSystem 同一フレーム同ファイル再生");
+                    // 同一フレーム同ファイル再生
                     return controls[ch];
                 }
             }

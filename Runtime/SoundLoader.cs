@@ -76,7 +76,6 @@ namespace Acfeel.SoundSystem
                 sb.Append('/');
                 sb.Append(fileName);
                 string path = sb.ToString();
-                Debug.Log(path);
                 clip = Resources.Load<AudioClip>(path);
                 if (clip != null)
                 {
