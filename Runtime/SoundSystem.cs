@@ -274,11 +274,17 @@ namespace Acfeel.SoundSystem
 
         public static void PlayMainBgm(string fileName, float? volume = null)
         {
+            if (!Instance) return;
+            if (Instance.Bgm != null && Instance.Bgm.FileName == fileName) return;
+            Instance.Bgm?.Stop();
             Instance.Bgm = Instance.Play(SoundType.Bgm, fileName, volume);
         }
 
         public static void PlayMainAmb(string fileName, float? volume = null)
         {
+            if (!Instance) return;
+            if (Instance.Amb != null && Instance.Amb.FileName == fileName) return;
+            Instance.Amb?.Stop();
             Instance.Amb = Instance.Play(SoundType.Amb, fileName, volume);
         }
 
