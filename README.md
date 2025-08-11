@@ -116,7 +116,7 @@ SoundSystem.PlaySe("ファイル名").Delay(3f);
 // 5秒地点から10秒地点までをループ再生
 SoundSystem.PlayBgm("ファイル名").SetIntroLoop(5f, 10f);
 
-// BPMを指定してループ再生
+// BPM120で4秒地点から8拍分ループ再生
 SoundSystem.PlayBgm("ファイル名").SetIntroLoopBpm(120f, 4f, 8f);
 ```
 
