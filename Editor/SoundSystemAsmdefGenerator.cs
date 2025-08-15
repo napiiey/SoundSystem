@@ -10,7 +10,7 @@ namespace Acfeel.SoundSystem.Editor
         const string DefaultAsmdefName = "Acfeel.SoundSystem";
         const string DefaultPath = "Assets/Acfeel.SoundSystem.asmdef";
 
-        [MenuItem("Acfeel/SoundSystem/Create .asmdef in Assets", priority = 1000)]
+        [MenuItem("Tools/SoundSystem/Create .asmdef in Assets", priority = 1000)]
         public static void CreateAsmdef()
         {
             if (File.Exists(DefaultPath))
