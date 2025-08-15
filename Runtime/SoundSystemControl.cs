@@ -173,20 +173,20 @@ namespace Acfeel.SoundSystem
             return this;
         }
 
-        public SoundSystemControl SetIntroLoop(float loopStart, float loopEnd)
+        public SoundSystemControl SetIntroLoop(float loopStartSec, float loopEndSec)
         {
             IsIntroLoop = true;
-            LoopStartSec = loopStart;
-            LoopEndSec = loopEnd;
+            LoopStartSec = loopStartSec;
+            LoopEndSec = loopEndSec;
             return this;
         }
 
-        public SoundSystemControl SetIntroLoopBpm(float bpm, float loopStart, float count)
+        public SoundSystemControl SetIntroLoopBpm(float bpm, float loopStartSec, float count)
         {
             IsIntroLoop = true;
             Bpm = bpm;
-            LoopStartSec = loopStart;
-            LoopEndSec = loopStart + 60f / bpm * count;
+            LoopStartSec = loopStartSec;
+            LoopEndSec = loopStartSec + 60f / bpm * count;
             return this;
         }
 
