@@ -2,8 +2,11 @@
     "name": "Acfeel.SoundSystem",
     "rootNamespace": "",
     "references": [
-        "UniTask"
+        "UniTask",
+        "Unity.Addressables",
+        "Unity.ResourceManager"
     ],
+
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
