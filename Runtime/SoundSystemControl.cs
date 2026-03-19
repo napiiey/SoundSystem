@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -14,7 +15,6 @@ namespace Acfeel.SoundSystem
         {
             soundSystem = system;
             Source = source;
-            ch = channel;
             SourceVol = soundSystem.Settings.DefaultSourceVol;
         }
 
