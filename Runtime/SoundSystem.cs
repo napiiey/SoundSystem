@@ -227,7 +227,7 @@ namespace Acfeel.SoundSystem
 
             for (int i = 0; i < Instance.channelCount; i++)
             {
-                if (Instance.controls[i].SoundType == soundType)
+                if (Instance.IsAffectedByVolumeChange(soundType, Instance.controls[i].SoundType))
                 {
                     Instance.controls[i].SetVolume();
                 }
@@ -240,7 +240,7 @@ namespace Acfeel.SoundSystem
 
             for (int i = 0; i < Instance.channelCount; i++)
             {
-                if (Instance.controls[i].SoundType == soundType)
+                if (Instance.IsAffectedByVolumeChange(soundType, Instance.controls[i].SoundType))
                 {
                     Instance.controls[i].SetVolume();
                 }
@@ -262,6 +262,17 @@ namespace Acfeel.SoundSystem
             return Settings.SoundTypeToChannelType[soundType] == ChannelType.Long
                 ? Settings.LongChannelCount
                 : Settings.ShortChannelCount;
+        }
+
+        bool IsAffectedByVolumeChange(SoundType changedType, SoundType targetType)
+        {
+            return changedType switch
+            {
+                SoundType.Master => true,
+                SoundType.BusBgm => targetType == SoundType.Bgm || targetType == SoundType.Amb,
+                SoundType.BusSe => targetType == SoundType.Se || targetType == SoundType.Sys,
+                _ => targetType == changedType
+            };
         }
 
         public static SoundSystemControl PlayBgm(string fileName, float? volume = null)
