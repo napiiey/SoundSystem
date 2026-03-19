@@ -54,6 +54,11 @@ namespace Acfeel.SoundSystem
             ResetStaticState();
         }
 
+        public static void ResetSingletonState()
+        {
+            ResetStaticState();
+        }
+
         static void ResetStaticState()
         {
             instance = null;
