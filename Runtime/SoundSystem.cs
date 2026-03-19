@@ -323,7 +323,7 @@ namespace Acfeel.SoundSystem
         {
             var instance = Instance;
             if (!instance) return;
-            if (instance.Bgm != null && instance.Bgm.FileName == fileName) return;
+            if (instance.Bgm != null && instance.Bgm.FileName == fileName && instance.IsControlActive(instance.Bgm)) return;
             instance.Bgm?.Stop();
             instance.Bgm = instance.Play(SoundType.Bgm, fileName, volume);
         }
@@ -332,7 +332,7 @@ namespace Acfeel.SoundSystem
         {
             var instance = Instance;
             if (!instance) return;
-            if (instance.Amb != null && instance.Amb.FileName == fileName) return;
+            if (instance.Amb != null && instance.Amb.FileName == fileName && instance.IsControlActive(instance.Amb)) return;
             instance.Amb?.Stop();
             instance.Amb = instance.Play(SoundType.Amb, fileName, volume);
         }
@@ -363,6 +363,13 @@ namespace Acfeel.SoundSystem
             var instance = Instance;
             if (!instance) return;
             instance.Load(fileName, SoundType.Sys);
+        }
+
+        bool IsControlActive(SoundSystemControl control)
+        {
+            return control != null &&
+                control.HasValidSource() &&
+                (control.IsPrePlaying || control.Source.isPlaying);
         }
     }
 }

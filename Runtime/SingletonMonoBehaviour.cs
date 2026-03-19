@@ -6,22 +6,32 @@ namespace Acfeel.SoundSystem
     {
         static T instance;
         static bool isApplicationQuitting;
-        static bool isDestroyingInstance;
+        static int destroyedFrame = -1;
 
         protected static T Instance
         {
             get
             {
-                if (isApplicationQuitting || isDestroyingInstance)
+                if (isApplicationQuitting)
                 {
                     return null;
                 }
 
-                if (instance == null)
+                if (ReferenceEquals(instance, null))
                 {
                     instance = (T)FindAnyObjectByType(typeof(T));
+                }
 
-                    if (instance == null && !isApplicationQuitting && !isDestroyingInstance)
+                if (!instance)
+                {
+                    if (Application.isPlaying && destroyedFrame == Time.frameCount)
+                    {
+                        return null;
+                    }
+
+                    instance = (T)FindAnyObjectByType(typeof(T));
+
+                    if (ReferenceEquals(instance, null))
                     {
                         var go = new GameObject(typeof(T).Name);
                         instance = go.AddComponent<T>();
@@ -33,20 +43,31 @@ namespace Acfeel.SoundSystem
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetStaticStateOnSubsystemRegistration()
+        {
+            ResetStaticState();
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void ResetStaticStateBeforeSceneLoad()
+        {
+            ResetStaticState();
+        }
+
         static void ResetStaticState()
         {
             instance = null;
             isApplicationQuitting = false;
-            isDestroyingInstance = false;
+            destroyedFrame = -1;
         }
 
         protected virtual void Awake()
         {
-            isDestroyingInstance = false;
+            destroyedFrame = -1;
             Application.quitting -= HandleApplicationQuitting;
             Application.quitting += HandleApplicationQuitting;
 
-            if (instance == null)
+            if (ReferenceEquals(instance, null) || !instance)
             {
                 instance = this as T;
                 DontDestroyOnLoad(gameObject);
@@ -62,8 +83,7 @@ namespace Acfeel.SoundSystem
         {
             if (instance == this as T)
             {
-                isDestroyingInstance = true;
-                instance = null;
+                destroyedFrame = Application.isPlaying ? Time.frameCount : -1;
             }
         }
 
