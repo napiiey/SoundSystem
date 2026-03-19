@@ -17,6 +17,7 @@ namespace Acfeel.SoundSystem
         long frameCounter;
         int idCounter;
         CancellationTokenSource cts;
+        bool isDestroying;
         public SoundSystemSettings Settings { get; private set; }
         public SoundSystemControl Bgm { get; set; }
         public static SoundSystemControl MainBgm => Instance ? Instance.Bgm : null;
@@ -72,10 +73,19 @@ namespace Acfeel.SoundSystem
 
         void ProcessDestroy()
         {
+            if (isDestroying) return;
+            isDestroying = true;
+
             cts?.Cancel();
+            cts?.Dispose();
+            cts = null;
+
+            if (controls == null) return;
+
             foreach (SoundSystemControl control in controls)
             {
-                control.Stop();
+                control?.Shutdown();
+                control?.Stop();
             }
         }
 
@@ -88,7 +98,7 @@ namespace Acfeel.SoundSystem
                     frameCounter++;
 
                     if (MainBgm != null && MainBgm.FileName != "" && MainBgm.IsIntroLoop &&
-                        MainBgm.Source.time >= MainBgm.LoopEndSec)
+                        MainBgm.HasValidSource() && MainBgm.Source.time >= MainBgm.LoopEndSec)
                     {
                         MainBgm.Source.time = MainBgm.LoopStartSec;
                     }
@@ -157,7 +167,9 @@ namespace Acfeel.SoundSystem
         {
             AudioClip clip = await soundLoader.LoadAudioClip(fileName, soundType);
 
-            if (clip != null)
+            if (clip != null && !isDestroying && controls != null &&
+                channel >= 0 && channel < controls.Length &&
+                controls[channel] != null && controls[channel].HasValidSource())
             {
                 audioSources[channel].clip = clip;
                 audioSources[channel].Play();

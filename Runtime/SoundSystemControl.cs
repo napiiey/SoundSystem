@@ -8,7 +8,7 @@ namespace Acfeel.SoundSystem
     public class SoundSystemControl
     {
         readonly SoundSystem soundSystem;
-        int ch;
+        bool isShuttingDown;
 
         public SoundSystemControl(SoundSystem system, AudioSource source, int channel)
         {
@@ -38,6 +38,8 @@ namespace Acfeel.SoundSystem
 
         public void Reset(string file, SoundType soundType, long frameCounter, int idCounter)
         {
+            isShuttingDown = false;
+            CancelAllTokenSources();
             FileName = file;
             SoundType = soundType;
             SourceVol = soundSystem.Settings.DefaultSourceVol;
@@ -54,43 +56,56 @@ namespace Acfeel.SoundSystem
         public SoundSystemControl FadeIn(float fadeSec = 1.0f)
         {
             FaderVol = 0.0f;
-            Cts.Remove("fade");
-            Cts.Add("fade", new CancellationTokenSource());
-            FadeProcess(1.0f, false, Cts["fade"].Token, fadeSec).Forget();
+            var cts = ReplaceCancellationTokenSource("fade");
+            if (cts == null) return this;
+            FadeProcess(1.0f, false, cts.Token, fadeSec).Forget();
             return this;
         }
 
         public SoundSystemControl FadeOut(float fadeSec = 1.0f)
         {
-            Cts.Remove("fade");
-            Cts.Add("fade", new CancellationTokenSource());
-            FadeProcess(0.0f, true, Cts["fade"].Token, fadeSec).Forget();
+            var cts = ReplaceCancellationTokenSource("fade");
+            if (cts == null) return this;
+            FadeProcess(0.0f, true, cts.Token, fadeSec).Forget();
             return this;
         }
 
         public SoundSystemControl Fade(float endVol, float fadeSec = 1.0f)
         {
-            Cts.Remove("fade");
-            Cts.Add("fade", new CancellationTokenSource());
-            FadeProcess(endVol, false, Cts["fade"].Token, fadeSec).Forget();
+            var cts = ReplaceCancellationTokenSource("fade");
+            if (cts == null) return this;
+            FadeProcess(endVol, false, cts.Token, fadeSec).Forget();
             return this;
         }
 
         async UniTask FadeProcess(float endVol, bool stop, CancellationToken token, float fadeSec)
         {
-            float startVol = FaderVol;
-            float time = 0.0f;
-
-            while (time < fadeSec)
+            try
             {
-                time += Time.deltaTime;
-                FaderVol = startVol + (endVol - startVol) * EaseInOutQuad(time / fadeSec);
-                SetVolume();
-                await UniTask.DelayFrame(1, cancellationToken: token);
-            }
+                if (!CanAccessSource()) return;
 
-            FaderVol = endVol;
-            if (stop) Stop();
+                float startVol = FaderVol;
+                float time = 0.0f;
+
+                while (time < fadeSec)
+                {
+                    if (token.IsCancellationRequested || !CanAccessSource()) return;
+
+                    time += Time.deltaTime;
+                    FaderVol = startVol + (endVol - startVol) * EaseInOutQuad(time / fadeSec);
+                    SetVolume();
+                    await UniTask.DelayFrame(1, cancellationToken: token);
+                }
+
+                if (token.IsCancellationRequested || !CanAccessSource()) return;
+
+                FaderVol = endVol;
+                SetVolume();
+                if (stop) Stop();
+            }
+            catch (OperationCanceledException)
+            {
+            }
         }
 
         float EaseInOutQuad(float t)
@@ -102,22 +117,13 @@ namespace Acfeel.SoundSystem
 
         public void SetVolume()
         {
+            if (!CanAccessSource()) return;
             Source.volume = SourceVol * FaderVol * soundSystem.GetGlobalVolume(SoundType);
         }
 
         public void Stop()
         {
-            if (Cts.ContainsKey("fade"))
-            {
-                Cts["fade"].Cancel();
-            }
-
-            if (Cts.ContainsKey("delay"))
-            {
-                Cts["delay"].Cancel();
-            }
-
-            Source.Stop();
+            CancelAllTokenSources();
             if (IsIntroLoop)
             {
                 IsIntroLoop = false;
@@ -127,48 +133,67 @@ namespace Acfeel.SoundSystem
             {
                 IsPrePlaying = false;
             }
+
+            if (Source != null)
+            {
+                Source.Stop();
+            }
         }
 
         public SoundSystemControl Delay(float delaySec)
         {
+            var cts = ReplaceCancellationTokenSource("delay");
+            if (cts == null) return this;
+            if (!CanAccessSource()) return this;
+
             Source.mute = true;
             IsPrePlaying = true;
-            Cts.Remove("delay");
-            Cts.Add("delay", new CancellationTokenSource());
-            DelayPlayStart(Cts["delay"].Token, delaySec).Forget();
+            DelayPlayStart(cts.Token, delaySec).Forget();
             return this;
         }
 
         async UniTask DelayPlayStart(CancellationToken token, float delaySec)
         {
-            int delayTime = (int)(delaySec * 1000);
-            await UniTask.Delay(delayTime, cancellationToken: token);
-            Source.Stop();
-            Source.mute = false;
-            Source.Play();
-            IsPrePlaying = false;
+            try
+            {
+                int delayTime = (int)(delaySec * 1000);
+                await UniTask.Delay(delayTime, cancellationToken: token);
+                if (token.IsCancellationRequested || !CanAccessSource()) return;
+
+                Source.Stop();
+                Source.mute = false;
+                Source.Play();
+                IsPrePlaying = false;
+            }
+            catch (OperationCanceledException)
+            {
+            }
         }
 
         public SoundSystemControl SetPitch(float pitch = 1f)
         {
+            if (!CanAccessSource()) return this;
             Source.pitch = pitch;
             return this;
         }
 
         public SoundSystemControl SetPan(float pan = 0f)
         {
+            if (!CanAccessSource()) return this;
             Source.panStereo = pan;
             return this;
         }
 
         public SoundSystemControl SetSpatial(float spatial = 0f)
         {
+            if (!CanAccessSource()) return this;
             Source.spatialBlend = spatial;
             return this;
         }
 
         public SoundSystemControl SetLoop(bool boolean = true)
         {
+            if (!CanAccessSource()) return this;
             Source.loop = boolean;
             return this;
         }
@@ -192,7 +217,53 @@ namespace Acfeel.SoundSystem
 
         public float GetTimeOnBeats()
         {
-            return Source.time * Bpm / 60;
+            return CanAccessSource() ? Source.time * Bpm / 60 : 0.0f;
+        }
+
+        internal void Shutdown()
+        {
+            isShuttingDown = true;
+            CancelAllTokenSources();
+        }
+
+        internal bool HasValidSource()
+        {
+            return CanAccessSource();
+        }
+
+        CancellationTokenSource ReplaceCancellationTokenSource(string key)
+        {
+            if (isShuttingDown) return null;
+
+            CancelAndDisposeTokenSource(key);
+
+            var cts = new CancellationTokenSource();
+            Cts[key] = cts;
+            return cts;
+        }
+
+        void CancelAllTokenSources()
+        {
+            if (Cts.Count == 0) return;
+
+            foreach (var key in new List<string>(Cts.Keys))
+            {
+                CancelAndDisposeTokenSource(key);
+            }
+        }
+
+        void CancelAndDisposeTokenSource(string key)
+        {
+            if (!Cts.TryGetValue(key, out var cts)) return;
+
+            Cts.Remove(key);
+            cts.Cancel();
+            cts.Dispose();
+        }
+
+        bool CanAccessSource()
+        {
+            return !isShuttingDown && Source != null;
         }
     }
 }
