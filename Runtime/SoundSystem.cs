@@ -61,9 +61,10 @@ namespace Acfeel.SoundSystem
             MainUpdate(cts.Token).Forget();
         }
 
-        void OnDestroy()
+        protected override void OnDestroy()
         {
             ProcessDestroy();
+            base.OnDestroy();
         }
 
         void OnApplicationQuit()
@@ -183,29 +184,39 @@ namespace Acfeel.SoundSystem
 
         public static void LoadForAddressables(string fileName)
         {
-            _ = Instance.soundLoader.LoadAudioClip(fileName, SoundType.Se);
+            var instance = Instance;
+            if (!instance) return;
+            _ = instance.soundLoader.LoadAudioClip(fileName, SoundType.Se);
         }
 
         public static void LoadAllForResources()
         {
-            Instance.soundLoader.PreloadAllClips();
+            var instance = Instance;
+            if (!instance) return;
+            instance.soundLoader.PreloadAllClips();
         }
 
         public static void StopAll(SoundType? soundType = null)
         {
-            for (int i = 0; i < Instance.audioSources.Length; i++)
+            var instance = Instance;
+            if (!instance) return;
+
+            for (int i = 0; i < instance.audioSources.Length; i++)
             {
-                if (soundType != null && Instance.controls[i].SoundType != soundType) continue;
-                Instance.controls[i].Stop();
+                if (soundType != null && instance.controls[i].SoundType != soundType) continue;
+                instance.controls[i].Stop();
             }
         }
 
         public static void FadeOutAll(float sec, SoundType? soundType = null)
         {
-            for (int i = 0; i < Instance.controls.Length; i++)
+            var instance = Instance;
+            if (!instance) return;
+
+            for (int i = 0; i < instance.controls.Length; i++)
             {
-                if (soundType != null && Instance.controls[i].SoundType != soundType) continue;
-                Instance.controls[i].FadeOut(sec);
+                if (soundType != null && instance.controls[i].SoundType != soundType) continue;
+                instance.controls[i].FadeOut(sec);
             }
         }
 
@@ -223,37 +234,46 @@ namespace Acfeel.SoundSystem
 
         public static void SetGlobalVolume(SoundType soundType, float vol)
         {
-            Instance.Settings.UserVol[soundType] = vol;
+            var instance = Instance;
+            if (!instance) return;
 
-            for (int i = 0; i < Instance.channelCount; i++)
+            instance.Settings.UserVol[soundType] = vol;
+
+            for (int i = 0; i < instance.channelCount; i++)
             {
-                if (Instance.IsAffectedByVolumeChange(soundType, Instance.controls[i].SoundType))
+                if (instance.IsAffectedByVolumeChange(soundType, instance.controls[i].SoundType))
                 {
-                    Instance.controls[i].SetVolume();
+                    instance.controls[i].SetVolume();
                 }
             }
         }
 
         public static void SetInnerVolume(SoundType soundType, float vol)
         {
-            Instance.Settings.VolBalance[soundType] = vol;
+            var instance = Instance;
+            if (!instance) return;
 
-            for (int i = 0; i < Instance.channelCount; i++)
+            instance.Settings.VolBalance[soundType] = vol;
+
+            for (int i = 0; i < instance.channelCount; i++)
             {
-                if (Instance.IsAffectedByVolumeChange(soundType, Instance.controls[i].SoundType))
+                if (instance.IsAffectedByVolumeChange(soundType, instance.controls[i].SoundType))
                 {
-                    Instance.controls[i].SetVolume();
+                    instance.controls[i].SetVolume();
                 }
             }
         }
 
         public static void SetMute(bool boolean)
         {
-            Instance.mute = boolean;
+            var instance = Instance;
+            if (!instance) return;
 
-            for (int i = 0; i < Instance.channelCount; i++)
+            instance.mute = boolean;
+
+            for (int i = 0; i < instance.channelCount; i++)
             {
-                Instance.controls[i].SetVolume();
+                instance.controls[i].SetVolume();
             }
         }
 
@@ -277,58 +297,72 @@ namespace Acfeel.SoundSystem
 
         public static SoundSystemControl PlayBgm(string fileName, float? volume = null)
         {
-            return Instance.Play(SoundType.Bgm, fileName, volume);
+            var instance = Instance;
+            return instance ? instance.Play(SoundType.Bgm, fileName, volume) : null;
         }
 
         public static SoundSystemControl PlayAmb(string fileName, float? volume = null)
         {
-            return Instance.Play(SoundType.Amb, fileName, volume);
+            var instance = Instance;
+            return instance ? instance.Play(SoundType.Amb, fileName, volume) : null;
         }
 
         public static SoundSystemControl PlaySe(string fileName, float? volume = null)
         {
-            return Instance.Play(SoundType.Se, fileName, volume);
+            var instance = Instance;
+            return instance ? instance.Play(SoundType.Se, fileName, volume) : null;
         }
 
         public static SoundSystemControl PlaySys(string fileName, float? volume = null)
         {
-            return Instance.Play(SoundType.Sys, fileName, volume);
+            var instance = Instance;
+            return instance ? instance.Play(SoundType.Sys, fileName, volume) : null;
         }
 
         public static void PlayMainBgm(string fileName, float? volume = null)
         {
-            if (!Instance) return;
-            if (Instance.Bgm != null && Instance.Bgm.FileName == fileName) return;
-            Instance.Bgm?.Stop();
-            Instance.Bgm = Instance.Play(SoundType.Bgm, fileName, volume);
+            var instance = Instance;
+            if (!instance) return;
+            if (instance.Bgm != null && instance.Bgm.FileName == fileName) return;
+            instance.Bgm?.Stop();
+            instance.Bgm = instance.Play(SoundType.Bgm, fileName, volume);
         }
 
         public static void PlayMainAmb(string fileName, float? volume = null)
         {
-            if (!Instance) return;
-            if (Instance.Amb != null && Instance.Amb.FileName == fileName) return;
-            Instance.Amb?.Stop();
-            Instance.Amb = Instance.Play(SoundType.Amb, fileName, volume);
+            var instance = Instance;
+            if (!instance) return;
+            if (instance.Amb != null && instance.Amb.FileName == fileName) return;
+            instance.Amb?.Stop();
+            instance.Amb = instance.Play(SoundType.Amb, fileName, volume);
         }
 
         public static void LoadBgm(string fileName)
         {
-            Instance.Load(fileName, SoundType.Bgm);
+            var instance = Instance;
+            if (!instance) return;
+            instance.Load(fileName, SoundType.Bgm);
         }
 
         public static void LoadAmb(string fileName)
         {
-            Instance.Load(fileName, SoundType.Amb);
+            var instance = Instance;
+            if (!instance) return;
+            instance.Load(fileName, SoundType.Amb);
         }
 
         public static void LoadSe(string fileName)
         {
-            Instance.Load(fileName, SoundType.Se);
+            var instance = Instance;
+            if (!instance) return;
+            instance.Load(fileName, SoundType.Se);
         }
 
         public static void LoadSys(string fileName)
         {
-            Instance.Load(fileName, SoundType.Sys);
+            var instance = Instance;
+            if (!instance) return;
+            instance.Load(fileName, SoundType.Sys);
         }
     }
 }
