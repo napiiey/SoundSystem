@@ -120,13 +120,17 @@ namespace Acfeel.SoundSystem
             int lastCh = startCh + GetChCapacity(soundType) - 1;
             int resultCh = 0;
             bool noFreeChanel = true;
+            bool shouldBlockDuplicateInSameFrame = soundType == SoundType.Se || soundType == SoundType.Sys;
 
-            for (int ch = startCh; ch <= lastCh; ch++)
+            if (shouldBlockDuplicateInSameFrame)
             {
-                if (controls[ch].FileName == fileName && controls[ch].StartFrame == frameCounter)
+                for (int ch = startCh; ch <= lastCh; ch++)
                 {
-                    // 同一フレーム同ファイル再生
-                    return controls[ch];
+                    if (controls[ch].FileName == fileName && controls[ch].StartFrame == frameCounter)
+                    {
+                        // SE / SYS は同一フレームの同一ファイル多重再生を防ぐ
+                        return controls[ch];
+                    }
                 }
             }
 
