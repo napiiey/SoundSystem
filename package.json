@@ -5,7 +5,7 @@
   "unity": "2021.3",
   "description": "Simple sound management system",
   "author": {
-    "name": "Napiiey"
+    "name": "Acfeel"
   },
   "dependencies": {
     "com.cysharp.unitask": "2.5.10"
