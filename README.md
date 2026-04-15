@@ -21,7 +21,7 @@
 3. 以下のURLを入力してインストール（※依存：**[UniTask](https://github.com/Cysharp/UniTask)**）  
 
     ```
-    https://github.com/napiiey/SoundSystem.git
+    https://github.com/Acfeel/SoundSystem.git
     ```
 
 4. Unity メニュー `Tools > SoundSystem > Create Settings Asset` を選択してセットアップを完了
